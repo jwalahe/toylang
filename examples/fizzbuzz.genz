@@ -1,0 +1,47 @@
+// FizzBuzz in Gen-Z Slang Lang
+// Prints numbers from 1 to n, but for multiples of 3 prints "Fizz"
+// and for multiples of 5 prints "Buzz". For multiples of both, prints "FizzBuzz"
+// 
+// This example uses all four arithmetic operators:
+// - bop (addition)
+// - skrt (subtraction)
+// - flex (multiplication)
+// - yikes (division)
+
+// Function to check if a number is divisible by another
+lowkey is_divisible(num, divisor) {
+  // Now we can use division and multiplication for modulo
+  tea quotient = num yikes divisor;  // Integer division
+  tea whole_part = quotient;  // Truncated to int
+  tea remainder = num skrt (whole_part flex divisor);
+  yeet remainder == 0;
+}
+
+// Main FizzBuzz function
+lowkey fizzbuzz(n) {
+  tea i = 1;
+  
+  vibe (i <= n) {
+    tea output = "";
+    
+    sus (is_divisible(i, 3)) {
+      output = "Fizz";
+    }
+    
+    sus (is_divisible(i, 5)) {
+      output = output bop "Buzz";
+    }
+    
+    // If output is empty, print the number
+    sus (output == "") {
+      yeet i;
+    } else {
+      yeet output;
+    }
+    
+    i = i bop 1;
+  }
+}
+
+// Run FizzBuzz for 1 to 20
+fizzbuzz(20);

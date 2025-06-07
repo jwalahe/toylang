@@ -1,0 +1,137 @@
+// GenZ Slang Lang Showcase Program
+// This program demonstrates all features of our language
+
+// ---- Variable declarations with 'tea' ----
+tea name = "GenZ Lang";
+tea version = 1.0;
+tea is_fire = bet;  // Boolean true
+
+// ---- Print statements with 'yeet' ----
+yeet "🔥 Welcome to " bop name bop " v" bop version bop "! 🔥";
+yeet "Is this language fire? " bop is_fire;
+
+// ---- Arithmetic Operations ----
+yeet "\n📊 Arithmetic Operations:";
+tea num1 = 10;
+tea num2 = 3;
+
+// Addition with 'bop'
+tea sum = num1 bop num2;
+yeet num1 bop " + " bop num2 bop " = " bop sum;
+
+// Subtraction with 'skrt'
+tea diff = num1 skrt num2;
+yeet num1 bop " - " bop num2 bop " = " bop diff;
+
+// Multiplication with 'flex'
+tea product = num1 flex num2;
+yeet num1 bop " * " bop num2 bop " = " bop product;
+
+// Division with 'yikes'
+tea quotient = num1 yikes num2;
+yeet num1 bop " / " bop num2 bop " = " bop quotient;
+
+// ---- Conditionals with 'sus' ----
+yeet "\n🧐 Conditional Statements:";
+tea age = 20;
+
+sus (age >= 21) {
+  yeet "You can drink in the US";
+} else {
+  yeet "No drinks for you in the US";
+}
+
+// Nested conditionals
+tea score = 85;
+
+sus (score >= 90) {
+  yeet "Grade: A - You're cracked!";
+} else {
+  sus (score >= 80) {
+    yeet "Grade: B - That's mid, but ok";
+  } else {
+    sus (score >= 70) {
+      yeet "Grade: C - Kinda sus";
+    } else {
+      yeet "Grade: F - No cap, that's an L";
+    }
+  }
+}
+
+// ---- Loops with 'vibe' ----
+yeet "\n🔄 Loop Example:";
+tea count = 0;
+tea result = "";
+
+yeet "Counting from 0 to 4:";
+vibe (count < 5) {
+  result = count bop ": " bop count flex count bop ", ";
+  yeet result;
+  count = count bop 1;
+}
+
+// ---- Functions with 'lowkey' ----
+yeet "\n🛠️ Function Example:";
+
+// Function that calculates the vibe check score
+lowkey vibe_check(drip, rizz, clout) {
+  tea base_score = drip bop rizz;
+  tea multiplier = 2;
+  tea bonus = clout flex multiplier;
+  tea total = base_score bop bonus;
+  
+  yeet "Drip: " bop drip;
+  yeet "Rizz: " bop rizz;
+  yeet "Clout: " bop clout;
+  yeet "Calculation: (" bop drip bop " + " bop rizz bop ") + (" bop clout bop " * " bop multiplier bop ")";
+  
+  yeet total;
+}
+
+yeet "Your vibe check score is:";
+tea final_score = vibe_check(7, 8, 5);
+yeet "Final score: " bop final_score;
+
+// ---- Boolean operations ----
+yeet "\n🔍 Boolean Logic:";
+tea based = bet;
+tea cringe = cap;
+
+yeet "based (true): " bop based;
+yeet "cringe (false): " bop cringe;
+yeet "based fr cringe (equality): " bop (based fr cringe);
+yeet "based fr bet (equality): " bop (based fr bet);
+
+// ---- Combining everything in a final challenge ----
+yeet "\n🏆 Final Boss - FizzBuzz:";
+
+lowkey is_divisible(num, divisor) {
+  tea quotient = num yikes divisor;
+  tea whole_part = quotient;
+  tea remainder = num skrt (whole_part flex divisor);
+  yeet remainder fr 0;
+}
+
+// A mini FizzBuzz from 1 to 15
+tea i = 1;
+vibe (i <= 15) {
+  tea output = "";
+  
+  sus (is_divisible(i, 3)) {
+    output = "Fizz";
+  }
+  
+  sus (is_divisible(i, 5)) {
+    output = output bop "Buzz";
+  }
+  
+  sus (output fr "") {
+    yeet i bop ": " bop output;
+  } else {
+    yeet i;
+  }
+  
+  i = i bop 1;
+}
+
+yeet "\n✨ That's all folks! ✨";

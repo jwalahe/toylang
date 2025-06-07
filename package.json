@@ -1,0 +1,33 @@
+{
+  "name": "toylang",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "build": "pnpm -r build",
+    "build:core": "cd packages/core && pnpm build",
+    "build:cli": "cd packages/cli && pnpm build",
+    "dev:playground": "cd playground && pnpm dev",
+    "gen:grammar": "cd packages/core && pnpm gen:grammar"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "eslint": "^9.27.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint-plugin-react": "^7.37.5",
+    "nearley": "^2.20.1"
+  }
+}

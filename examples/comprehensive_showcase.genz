@@ -1,0 +1,250 @@
+// GenZ Slang Lang: Comprehensive Showcase
+// This program demonstrates ALL features of the GenZ Slang Lang
+
+// ---- Section 1: Basic Variable Declarations & Data Types ----
+spill This section shows all the different data types in GenZ Slang Lang
+
+// String variables
+tea greeting = "Sup, fam!";
+yeet "📝 String variable: " bop greeting;
+
+// Numeric variables - both integer and float
+tea whole_num = 42;
+tea decimal_num = 3.14;
+yeet "📝 Integer: " bop whole_num bop " | Float: " bop decimal_num;
+
+// Boolean values
+tea is_bussin = bet;   // true
+tea is_mid = cap;      // false
+yeet "📝 Booleans: " bop is_bussin bop " (bet) | " bop is_mid bop " (cap)";
+
+// Array declaration
+tea vibe_check = ["based", "no cap", "frfr", 100];
+yeet "📝 Array: " bop vibe_check;
+
+// ---- Section 2: All Arithmetic Operations ----
+spill This section demonstrates all arithmetic operators
+
+tea x = 10;
+tea y = 4;
+
+// Addition with 'bop'
+tea sum = x bop y;
+yeet "\n🧮 Addition: " bop x bop " bop " bop y bop " = " bop sum;
+
+// Subtraction with 'skrt'
+tea difference = x skrt y;
+yeet "🧮 Subtraction: " bop x bop " skrt " bop y bop " = " bop difference;
+
+// Multiplication with 'flex'
+tea product = x flex y;
+yeet "🧮 Multiplication: " bop x bop " flex " bop y bop " = " bop product;
+
+// Division with 'yikes'
+tea quotient = x yikes y;
+yeet "🧮 Division: " bop x bop " yikes " bop y bop " = " bop quotient;
+
+// ---- Section 3: String Concatenation ----
+spill Showing how strings can be concatenated using bop
+
+tea first_name = "Gen";
+tea last_name = "Z";
+tea full_name = first_name bop "-" bop last_name;
+yeet "\n🔤 String concatenation: " bop full_name;
+
+// ---- Section 4: Comparison and Equality Operators ----
+spill Demonstrating all comparison operators: fr, <, >, <=, >=, !=
+
+tea a = 5;
+tea b = 5;
+tea c = 10;
+
+// Equality with 'fr'
+yeet "\n⚖️ Comparison Operators:";
+yeet "5 fr 5: " bop (a fr b);
+yeet "5 fr 10: " bop (a fr c);
+
+// Not equal
+yeet "5 != 10: " bop (a != c);
+
+// Greater than
+yeet "10 > 5: " bop (c > a);
+
+// Less than
+yeet "5 < 10: " bop (a < c);
+
+// Greater than or equal to
+yeet "5 >= 5: " bop (a >= b);
+
+// Less than or equal to
+yeet "5 <= 5: " bop (a <= b);
+
+// ---- Section 5: Logical Operators ----
+spill Demonstrating the logical NOT operator with no_cap
+
+tea truth = bet;
+tea falsehood = cap;
+
+yeet "\n🔄 Logical Operators:";
+yeet "bet: " bop truth;
+yeet "cap: " bop falsehood;
+yeet "no_cap bet: " bop no_cap truth;
+yeet "no_cap cap: " bop no_cap falsehood;
+
+// ---- Section 6: Conditional Statements ----
+spill Showing both if and if-else structures with sus
+
+tea vibe_level = 75;
+
+yeet "\n🔀 Conditional Statements:";
+
+// Simple if statement
+sus (vibe_level > 50) {
+  yeet "Basic condition: Your vibe level is high key good!";
+}
+
+// If-else statement
+sus (vibe_level > 90) {
+  yeet "If-else: You're absolutely slaying!";
+} else {
+  yeet "If-else: You're still a vibe, but could be more lit";
+}
+
+// Nested if-else conditions
+tea mood_score = 85;
+
+sus (mood_score > 90) {
+  yeet "Nested: You're cracked at life!";
+} else {
+  sus (mood_score > 80) {
+    yeet "Nested: Pretty based ngl";
+  } else {
+    sus (mood_score > 70) {
+      yeet "Nested: Mid, but not terrible";
+    } else {
+      yeet "Nested: Big yikes energy";
+    }
+  }
+}
+
+// ---- Section 7: Loops with 'vibe' ----
+spill Demonstrating loop functionality
+
+yeet "\n🔁 Loop Examples:";
+
+// Simple counting loop
+tea count = 1;
+yeet "Simple counting loop:";
+vibe (count <= 5) {
+  yeet "Loop iteration: " bop count;
+  count = count bop 1;
+}
+
+// Loop with a break condition using compound logic
+tea i = 0;
+yeet "\nLoop with early exit:";
+vibe (i < 10) {
+  yeet "i = " bop i;
+  
+  sus (i fr 5) {
+    yeet "Found 5, exiting loop";
+    slay; // Break statement
+  }
+  
+  i = i bop 1;
+}
+
+// ---- Section 8: Functions ----
+spill Demonstrating function declarations and calls
+
+yeet "\n🛠️ Function Examples:";
+
+// Simple function with no parameters
+lowkey say_slay() {
+  yeet "Slaaaaay! 💅";
+}
+
+say_slay();
+
+// Function with parameters
+lowkey calculate_rizz(charisma, drip) {
+  tea rizz_score = charisma bop drip;
+  yeet rizz_score;
+}
+
+yeet "Your rizz score is: " bop calculate_rizz(7, 8);
+
+// Function with return value
+lowkey get_vibe_ratio(good_vibes, bad_vibes) {
+  tea ratio = good_vibes yikes bad_vibes;
+  yeet ratio; // Using yeet as return
+}
+
+tea final_ratio = get_vibe_ratio(100, 20);
+yeet "Vibe ratio: " bop final_ratio;
+
+// Complex function with multiple operations
+lowkey glow_up_calculator(base_level, effort, consistency) {
+  tea effort_factor = effort flex 1.5;
+  tea consistency_bonus = consistency flex 2;
+  tea final_level = base_level bop effort_factor bop consistency_bonus;
+  
+  sus (final_level > 100) {
+    yeet "Glow up level: ICONIC (" bop final_level bop ")";
+  } else {
+    sus (final_level > 70) {
+      yeet "Glow up level: BUSSIN (" bop final_level bop ")";
+    } else {
+      yeet "Glow up level: MID (" bop final_level bop ")";
+    }
+  }
+  
+  yeet final_level;
+}
+
+tea glow_up = glow_up_calculator(50, 8, 7);
+yeet "Your glow up score: " bop glow_up;
+
+// ---- Section 9: Bringing it all together ----
+spill A more complex example using multiple features together
+
+yeet "\n🔥 Final Boss Challenge: Social Media Engagement Calculator";
+
+// Function to calculate engagement score
+lowkey engagement_score(likes, comments, shares, followers) {
+  tea engagement_rate = ((likes bop comments flex 2 bop shares flex 3) yikes followers) flex 100;
+  
+  yeet "Post Stats:";
+  yeet "- Likes: " bop likes;
+  yeet "- Comments: " bop comments;
+  yeet "- Shares: " bop shares;
+  yeet "- Followers: " bop followers;
+  
+  yeet "Engagement calculation: ((likes + comments*2 + shares*3) / followers) * 100";
+  yeet "Raw engagement rate: " bop engagement_rate bop "%";
+  
+  sus (engagement_rate > 15) {
+    yeet "🌟 Your post is VIRAL AF!";
+  } else {
+    sus (engagement_rate > 7) {
+      yeet "✨ Your post is slaying!";
+    } else {
+      sus (engagement_rate > 3) {
+        yeet "👍 Your post is decent, not mid";
+      } else {
+        yeet "🫠 Your post flopped, bestie";
+      }
+    }
+  }
+  
+  yeet engagement_rate;
+}
+
+// Calculate engagement for different scenarios
+tea viral_post = engagement_score(5000, 300, 1000, 10000);
+yeet "Viral post score: " bop viral_post bop "%";
+
+tea regular_post = engagement_score(100, 20, 5, 1000);
+yeet "Regular post score: " bop regular_post bop "%";
+
+yeet "\n💯 GenZ Slang Lang Comprehensive Showcase Complete!";

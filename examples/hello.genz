@@ -1,0 +1,40 @@
+// Hello World example in Gen-Z Slang Lang
+
+// Variable declaration with tea
+tea greeting = "Hello, bruh!";
+
+// Print statement with yeet
+yeet greeting;
+
+// Conditional with sus
+tea is_lit = bet;
+
+sus (is_lit) {
+  yeet "This language is bussin'!";
+} else {
+  yeet "This language is mid.";
+}
+
+// Loop with vibe
+tea count = 0;
+vibe (count < 3) {
+  yeet "Count is: " bop count;
+  
+// Demonstrating multiplication (flex) and division (yikes)
+tea a = 6;
+tea b = 2;
+tea product = a flex b;  // 12
+tea quotient = a yikes b;  // 3
+yeet "6 flex 2 = " bop product;
+yeet "6 yikes 2 = " bop quotient;
+  count = count bop 1;
+}
+
+// Function declaration with lowkey
+lowkey calculate_rizz(charisma, drip) {
+  yeet charisma bop drip bop 5;
+}
+
+// Function call
+tea rizz = calculate_rizz(7, 3);
+yeet "Your rizz level is: " bop rizz;  // Should output: Your rizz level is: 15
