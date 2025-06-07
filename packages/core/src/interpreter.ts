@@ -86,6 +86,7 @@ export class Interpreter {
   private opCount: number;
   private readonly MAX_OPS = 100000;
   private startTime: number;
+  private inFunctionContext: boolean = false; // Track if we're executing inside a function
 
   constructor() {
     this.environment = new Environment();
@@ -170,7 +171,14 @@ export class Interpreter {
 
   private executePrint(stmt: PrintStatement): void {
     const value = this.evaluate(stmt.expression);
-    this.output.push(String(value));
+    
+    // If we're in a function context, treat this as a return statement
+    if (this.inFunctionContext) {
+      throw value; // Use throw to jump out of nested calls (same as return)
+    } else {
+      // Otherwise, it's a regular print statement
+      this.output.push(String(value));
+    }
   }
 
   private executeVarDecl(stmt: VarDeclaration): void {
@@ -227,6 +235,22 @@ export class Interpreter {
       }
     } finally {
       this.environment = previous;
+    }
+  }
+
+  private executeFunctionBlock(stmt: BlockStatement, environment: Environment): void {
+    const previous = this.environment;
+    const previousFunctionContext = this.inFunctionContext;
+    this.environment = environment;
+    this.inFunctionContext = true; // Set function context
+
+    try {
+      for (const statement of stmt.statements) {
+        this.execute(statement);
+      }
+    } finally {
+      this.environment = previous;
+      this.inFunctionContext = previousFunctionContext; // Restore previous context
     }
   }
 
@@ -386,7 +410,7 @@ export class Interpreter {
     }
 
     try {
-      this.executeBlock(fn.declaration.body, environment);
+      this.executeFunctionBlock(fn.declaration.body, environment);
     } catch (e) {
       const returnValue = e as unknown;
       if (returnValue instanceof Error) {

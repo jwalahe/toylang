@@ -16,7 +16,6 @@ Statement ->
   | LoopStatement     {% id %}
   | BlockStatement    {% id %}
   | FunctionDecl      {% id %}
-  | ReturnStatement   {% id %}
   | ExprStatement     {% id %}
   | %ws              {% () => null %}
 
@@ -71,14 +70,6 @@ FunctionDecl -> %lowkey _ %identifier _ %lparen _ Parameters _ %rparen _ BlockSt
     name: id.value,
     params,
     body
-  })
-%}
-
-# Return statement (yeet as return)
-ReturnStatement -> %yeet _ Expression _ %semicolon {% 
-  ([, , expr, , ]) => ({
-    type: 'ReturnStatement',
-    value: expr
   })
 %}
 
