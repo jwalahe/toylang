@@ -6,9 +6,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createInterface } from 'readline';
-
-// This is a placeholder - in the real implementation, we'll import from the core package
-// import { GenzLang } from 'genz-lang-core';
+import { GenzLang, GenzSyntaxError, GenzRuntimeError } from 'genz-lang-core';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,17 +38,30 @@ program
       // Read file
       const source = await fs.readFile(file, 'utf8');
       
-      // Currently a placeholder - in the real implementation, we'll use GenzLang
       console.log(chalk.yellow('🔥 Gen-Z Slang Lang Interpreter 🔥'));
-      console.log(chalk.cyan('Code to execute:'));
-      console.log(chalk.gray('------------------------------------------'));
-      console.log(chalk.white(source));
-      console.log(chalk.gray('------------------------------------------'));
-      console.log(chalk.green('No cap, this would run if the interpreter was implemented!'));
+      
+      if (options.debug) {
+        console.log(chalk.cyan('Code to execute:'));
+        console.log(chalk.gray('------------------------------------------'));
+        console.log(chalk.white(source));
+        console.log(chalk.gray('------------------------------------------'));
+      }
+      
+      // Create interpreter instance and execute
+      const genzLang = new GenzLang();
+      const output = genzLang.execute(source);
+      
+      console.log(chalk.green('✨ Output:'));
+      output.forEach(line => console.log(chalk.white(line)));
       
       if (options.debug) {
         console.log(chalk.magenta('\n🔍 Debug mode enabled'));
-        console.log(chalk.blue('Would show tokens and AST here'));
+        try {
+          const ast = genzLang.parse(source);
+          console.log(chalk.blue('AST:'), JSON.stringify(ast, null, 2));
+        } catch (err) {
+          console.log(chalk.red('Failed to parse for debug:'), err);
+        }
       }
     } catch (err) {
       console.error(chalk.red(`💀 Error: ${err instanceof Error ? err.message : String(err)}`));
@@ -65,6 +76,8 @@ program
   .action(() => {
     console.log(chalk.yellow('🔥 Gen-Z Slang Lang REPL 🔥'));
     console.log(chalk.cyan('Type Gen-Z code and see it execute. Use .exit or Ctrl+C to quit.'));
+    
+    const genzLang = new GenzLang();
     
     const rl = createInterface({
       input: process.stdin,
@@ -81,9 +94,8 @@ program
       }
       
       try {
-        // Currently a placeholder - in the real implementation, we'll use GenzLang
-        console.log(chalk.yellow(`You entered: ${input}`));
-        console.log(chalk.blue('No cap, this would execute if the interpreter was implemented!'));
+        const output = genzLang.execute(input);
+        output.forEach(line => console.log(chalk.white(line)));
       } catch (err) {
         console.error(chalk.red(`💀 Error: ${err instanceof Error ? err.message : String(err)}`));
       }

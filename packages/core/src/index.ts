@@ -1,9 +1,9 @@
 // src/index.ts
 import nearley from 'nearley';
-import { Program } from './ast';
-import lexer from './lexer';
-import { Interpreter, GenzRuntimeError } from './interpreter';
-import grammar from './grammar-esm-fixed';
+import { Program } from './ast.js';
+import lexer from './lexer.js';
+import { Interpreter, GenzRuntimeError } from './interpreter.js';
+import grammar from './grammar-esm-fixed.js';
 
 export class GenzSyntaxError extends Error {
   line?: number;
@@ -92,6 +92,6 @@ export class GenzLang {
 
 // Re-export types and error classes
 export { GenzRuntimeError };
-export type { Program } from './ast';
-export * from './ast';
-export { default as lexer, Token, TokenType } from './lexer';
+export type { Program } from './ast.js';
+export * from './ast.js';
+export { default as lexer, Token, TokenType } from './lexer.js';

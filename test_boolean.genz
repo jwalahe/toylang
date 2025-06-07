@@ -1,0 +1,16 @@
+// Simple boolean test
+tea truth = bet;
+tea falsehood = cap;
+
+yeet truth;
+yeet falsehood;
+
+sus (truth) {
+  yeet "Truth is working!";
+}
+
+sus (falsehood) {
+  yeet "This should not print";
+} else {
+  yeet "Falsehood is working!";
+}

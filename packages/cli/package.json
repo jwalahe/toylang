@@ -23,7 +23,8 @@
   "packageManager": "pnpm@10.11.0",
   "dependencies": {
     "chalk": "^5.4.1",
-    "commander": "^14.0.0"
+    "commander": "^14.0.0",
+    "genz-lang-core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.15.21"

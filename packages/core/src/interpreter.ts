@@ -13,13 +13,14 @@ import type {
   BinaryExpression,
   UnaryExpression,
   Literal,
+  BooleanLiteral,
   StringLiteral,
   Identifier,
   CallExpression,
   ArrayExpression,
   FunctionDeclaration,
   FunctionDecl
-} from './ast';
+} from './ast.js';
 
 export class GenzRuntimeError extends Error {
   line?: number;
@@ -279,6 +280,8 @@ export class Interpreter {
     switch (expr.type) {
       case 'Literal':
         return this.evaluateLiteral(expr);
+      case 'BooleanLiteral':
+        return this.evaluateBooleanLiteral(expr);
       case 'Identifier':
         return this.evaluateIdentifier(expr);
       case 'BinaryExpression':
@@ -297,6 +300,10 @@ export class Interpreter {
   }
 
   private evaluateLiteral(expr: Literal): GenzValue {
+    return expr.value;
+  }
+
+  private evaluateBooleanLiteral(expr: BooleanLiteral): GenzValue {
     return expr.value;
   }
 

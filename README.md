@@ -100,22 +100,86 @@ Tree-walking interpreter featuring:
 ### Language Features
 
 #### Data Types
-- **Numbers**: Integers and floating-point values
-- **Strings**: Text literals with escape sequence support
-- **Booleans**: `bet` (true) and `cap` (false)
-- **Arrays**: Dynamic arrays with bracket notation
-- **Functions**: First-class functions with closures
+- **Numbers**: Integers and floating-point values (JavaScript number type)
+  - Examples: `42`, `3.14`, `-10`
+  - Arithmetic operations supported
+- **Strings**: Text literals with double quotes
+  - Examples: `"Hello, bruh!"`, `"This is bussin'"`
+  - String concatenation with `bop` operator
+- **Booleans**: Gen-Z slang boolean literals
+  - `bet` → `true`
+  - `cap` → `false`
+  - Used in conditionals and logical expressions
+- **Arrays**: Dynamic arrays with bracket notation (planned feature)
+- **Functions**: First-class functions with lexical closures
+  - Function declarations create callable objects
+  - Parameters passed by value
+  - Return values supported via expressions
 
 #### Control Structures
-- **Conditionals**: `sus` statements with optional `else` branches
-- **Loops**: `vibe` loops with condition-based iteration
-- **Functions**: `lowkey` function declarations with parameters and return values
+- **Conditionals**: `sus` (if) statements with optional `else` branches
+  - Syntax: `sus (condition) { statements } else { statements }`
+  - Condition must be truthy/falsy expression
+  - Block statements required (braces mandatory)
+- **Loops**: `vibe` (while) loops with condition-based iteration
+  - Syntax: `vibe (condition) { statements }`
+  - Infinite loop protection with operation counting
+  - No break/continue statements (yet)
+- **Functions**: `lowkey` function declarations with parameters
+  - Syntax: `lowkey function_name(param1, param2) { statements }`
+  - Functions are first-class values
+  - Lexical scoping with closure support
 
 #### Operators
-- **Arithmetic**: Addition (`bop`), subtraction (`skrt`), multiplication (`flex`), division (`yikes`)
-- **Comparison**: Equality (`fr`), inequality, greater than, less than
-- **Logical**: Negation (`no_cap`)
-- **Assignment**: Variable assignment with `=`
+- **Arithmetic**: 
+  - Addition: `bop` or `+` (string concatenation or numeric addition)
+  - Subtraction: `skrt` or `-`
+  - Multiplication: `flex` or `*`
+  - Division: `yikes` or `/` (includes division by zero checking)
+- **Comparison**: 
+  - Equality: `fr` (==)
+  - Inequality: `neq` (!=)
+  - Less than: `<` 
+  - Greater than: `>`
+  - Less than or equal: `<=`
+  - Greater than or equal: `>=`
+- **Logical**: 
+  - Negation: `no_cap` (logical NOT)
+- **Assignment**: 
+  - Variable assignment: `=`
+  - Assignment is an expression that returns the assigned value
+
+#### Variable Declaration and Scoping
+- **Variable Declaration**: `tea variable_name = expression;`
+  - Variables must be declared before use
+  - Block-scoped within `{}` braces
+  - Function parameters create local variables
+- **Scoping Rules**:
+  - Lexical (static) scoping
+  - Inner scopes can access outer scope variables
+  - Variable shadowing allowed
+  - Function closures capture lexical environment
+
+#### Statement Types
+- **Print Statement**: `yeet expression;` - outputs value to console
+- **Variable Declaration**: `tea name = value;` - creates new variable
+- **Expression Statement**: Any expression followed by `;`
+- **Block Statement**: `{ statements... }` - groups statements with new scope
+- **Return Statement**: Implicit returns from function expressions
+
+#### Expression Evaluation
+- **Operator Precedence** (highest to lowest):
+  1. Function calls, array access
+  2. Unary operators (`no_cap`)
+  3. Multiplication (`flex`), Division (`yikes`)
+  4. Addition (`bop`), Subtraction (`skrt`)
+  5. Comparison operators (`<`, `>`, `<=`, `>=`)
+  6. Equality operators (`fr`, `neq`)
+  7. Assignment (`=`)
+- **Type Coercion**:
+  - String concatenation: any type + string → string
+  - Arithmetic: requires numbers (throws error otherwise)
+  - Truthiness: `false`, `0`, `""`, `null`, `undefined` are falsy
 
 ### Error Handling
 

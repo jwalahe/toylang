@@ -45,6 +45,9 @@ importers:
       commander:
         specifier: ^14.0.0
         version: 14.0.0
+      genz-lang-core:
+        specifier: workspace:*
+        version: link:../core
     devDependencies:
       '@types/node':
         specifier: ^22.15.21

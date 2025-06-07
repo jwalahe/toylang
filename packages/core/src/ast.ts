@@ -13,6 +13,7 @@ export type NodeType =
   | 'BinaryExpression'
   | 'UnaryExpression'
   | 'Literal'
+  | 'BooleanLiteral'
   | 'StringLiteral'
   | 'Identifier'
   | 'CallExpression'
@@ -100,6 +101,7 @@ export type Expression =
   | BinaryExpression
   | UnaryExpression
   | Literal
+  | BooleanLiteral
   | StringLiteral
   | Identifier
   | CallExpression
@@ -109,6 +111,12 @@ export type Expression =
 export interface StringLiteral extends Node {
   type: 'StringLiteral';
   value: string;
+}
+
+// Add a BooleanLiteral interface to handle boolean literals
+export interface BooleanLiteral extends Node {
+  type: 'BooleanLiteral';
+  value: boolean;
 }
 
 export interface BinaryExpression extends Node {
