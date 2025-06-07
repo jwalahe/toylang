@@ -1,0 +1,31 @@
+{
+  "name": "genz-lang-cli",
+  "version": "0.1.0",
+  "description": "Command-line interface for Gen-Z Slang Lang",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "genz": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [
+    "cli",
+    "gen-z",
+    "slang",
+    "language"
+  ],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21"
+  }
+}

@@ -1,0 +1,141 @@
+#root {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+:root {
+  --primary-color: #8a2be2;
+  --secondary-color: #ff6b6b;
+  --background-color: #121212;
+  --surface-color: #1e1e1e;
+  --text-color: #ffffff;
+  --border-radius: 8px;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  color: white;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo-container h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.run-button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.run-button:hover {
+  background: #388e3c;
+}
+
+.run-button.running {
+  background: #ff9800;
+}
+
+.run-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.editor-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.code-section {
+  flex: 3;
+  border-right: 1px solid #333;
+  height: 100%;
+}
+
+.output-section {
+  flex: 2;
+  padding: 1rem;
+  background-color: var(--surface-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.output-section h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.output-console {
+  background-color: rgba(0,0,0,0.3);
+  border-radius: var(--border-radius);
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  font-family: monospace;
+}
+
+.output-line {
+  margin-bottom: 0.5rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.app-footer {
+  padding: 0.5rem 1rem;
+  background-color: var(--surface-color);
+  text-align: center;
+  font-size: 0.8rem;
+  border-top: 1px solid #333;
+}
+
+.app-footer a {
+  color: var(--primary-color);
+  margin-left: 0.5rem;
+  text-decoration: none;
+}
+
+.app-footer a:hover {
+  text-decoration: underline;
+}

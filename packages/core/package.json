@@ -1,0 +1,34 @@
+{
+  "name": "genz-lang-core",
+  "version": "0.1.0",
+  "description": "Gen-Z Slang Lang core compiler and interpreter",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "gen:grammar": "nearleyc src/grammar.ne -o src/grammar.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "programming-language",
+    "interpreter",
+    "gen-z",
+    "slang"
+  ],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.11.0",
+  "dependencies": {
+    "moo": "^0.5.2",
+    "nearley": "^2.20.1"
+  },
+  "devDependencies": {
+    "@types/moo": "^0.5.10",
+    "@types/nearley": "^2.11.5",
+    "vitest": "^3.1.4"
+  }
+}
