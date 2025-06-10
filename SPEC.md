@@ -117,3 +117,101 @@ tea result = rizz_calc(5, 3);
 yeet "Rizz level:";
 yeet result;  // Outputs: Rizz level: 25 (15 + 7.5 + 10)
 ```
+
+## Build Process and Grammar Generation
+
+### Grammar Compilation
+
+The language uses Nearley.js for parsing with the following grammar pipeline:
+
+1. **Source Grammar**: `packages/core/src/grammar.ne` - The main grammar definition
+2. **Generated Grammar**: The build process generates TypeScript grammar files
+3. **Working Grammar**: `packages/core/src/grammar-esm-fixed.ts` - The production grammar used by the interpreter
+
+### Build Commands
+
+```bash
+# Generate grammar from .ne file
+pnpm run gen:grammar
+
+# Build TypeScript to JavaScript
+pnpm build
+
+# Build specific packages
+pnpm run build:core
+pnpm run build:cli
+```
+
+### Grammar Generation Process
+
+The grammar generation uses the following command:
+```bash
+nearleyc src/grammar.ne -o src/grammar.ts
+```
+
+However, the project currently uses `grammar-esm-fixed.ts` as the working grammar file due to compatibility improvements.
+
+### Platform Compatibility
+
+As of the latest version, the project includes pre-compiled distribution files to ensure cross-platform compatibility:
+
+- **`packages/core/dist/`** - Compiled core language implementation
+- **`packages/cli/dist/`** - Compiled CLI interface
+- **`grammar-esm-fixed.ts`** - Working grammar file (committed to git)
+
+This ensures the project works immediately after cloning on any platform (Windows, macOS, Linux) without requiring complex build dependencies.
+
+### Development Workflow
+
+1. **Local Development**: Modify source files in `src/` directories
+2. **Grammar Changes**: Edit `grammar.ne` and run `pnpm run gen:grammar` if needed
+3. **Building**: Run `pnpm build` to compile TypeScript
+4. **Testing**: Use `node packages/cli/dist/index.js run examples/hello.genz`
+
+## Recent Improvements and Bug Fixes
+
+### BooleanLiteral Runtime Error Fix
+
+**Issue Resolved**: Fixed critical runtime error when using boolean literals (`bet` and `cap`)
+
+**Problem**: 
+- Runtime error: `🔥 Runtime sus detected: Unknown expression type: BooleanLiteral`
+- Grammar was generating `BooleanLiteral` AST nodes but interpreter didn't recognize the type
+
+**Solution**:
+- Added `BooleanLiteral` to AST type definitions in `packages/core/src/ast.ts`
+- Updated interpreter to handle `BooleanLiteral` expressions in `packages/core/src/interpreter.ts`
+- Added proper type safety for boolean literal evaluation
+
+**Files Modified**:
+- `ast.ts`: Added `BooleanLiteral` interface and type unions
+- `interpreter.ts`: Added `evaluateBooleanLiteral()` method and case handling
+
+### Windows Compatibility Improvements
+
+**Issue Resolved**: Project failed to run on Windows machines after cloning
+
+**Problem**:
+- Missing essential generated files (`grammar-esm-fixed.ts`)
+- Missing compiled distribution files (`dist/` directories)
+- TypeScript compilation errors in auto-generated grammar files
+
+**Solution**:
+- Added working grammar file (`grammar-esm-fixed.ts`) to version control
+- Included compiled distribution files for immediate functionality
+- Removed problematic auto-generated files that caused build errors
+
+**Impact**:
+- ✅ Project now works immediately after `git clone` on all platforms
+- ✅ No complex build dependencies required for basic usage
+- ✅ Boolean literals work correctly in all language contexts
+- ✅ All existing functionality preserved
+
+### Testing Coverage
+
+The language now includes comprehensive testing for:
+- Boolean literal evaluation (`bet` and `cap` values)
+- Cross-platform compatibility (Windows, macOS, Linux)
+- End-to-end functionality with example programs
+- Grammar parsing and AST generation
+- Interpreter execution and error handling
