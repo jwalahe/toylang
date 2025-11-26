@@ -41,5 +41,5 @@ export type TokenType = keyof typeof tokenTypes;
 export type Token = moo.Token & {
     type: TokenType;
 };
-declare const lexer: moo.Lexer;
+declare const lexer: any;
 export default lexer;
