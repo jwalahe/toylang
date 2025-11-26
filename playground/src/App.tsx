@@ -1,203 +1,446 @@
-import { useState } from 'react'
-import Editor from '@monaco-editor/react'
-import './App.css'
+import { useState, useCallback, useRef } from 'react';
+import { ControlBar, CodePanel, MemoryPanel, OutputPanel, ExplanationPanel } from './components';
+import type { Variable, ExecutionStep, ExecutionState } from './types';
+import './App.css';
 
-// Define Monaco language for Gen-Z Slang Lang
-const setupGenzLanguage = (monaco: typeof import('monaco-editor')) => {
-  // Register a new language
-  monaco.languages.register({ id: 'genz' })
+// Sample VibeScript code
+const initialCode = `note Welcome to VibeScript!
+note A programming language that teaches you how code works
 
-  // Register a tokens provider for the language
-  monaco.languages.setMonarchTokensProvider('genz', {
-    keywords: ['yeet', 'sus', 'bet', 'cap', 'tea', 'lowkey', 'vibe', 'fr', 'no_cap', 'slay', 'bop', 'skrt', 'spill', 'flex', 'yikes'],
-    operators: ['=', '==', '>', '<', '>=', '<=', '!='],
-    symbols: /[=><!~?:&|+\-*/%]+/,
-    
-    tokenizer: {
-      root: [
-        // Keywords
-        [/\b(yeet|sus|bet|cap|tea|lowkey|vibe|fr|no_cap|slay|bop|skrt|flex|yikes)\b/i, 'keyword'],
-        
-        // Comments
-        [/\/\/.*$/, 'comment'],
-        [/\bspill\b.*$/, 'comment'],
-        
-        // Strings
-        [/".*?"/, 'string'],
-        
-        // Numbers
-        [/\b\d+(\.\d+)?\b/, 'number'],
-        
-        // Identifiers
-        [/\b[a-zA-Z_][\w]*\b/, 'identifier'],
-        
-        // Brackets and Punctuation
-        [/[{}[\]()]/, '@brackets'],
-        [/[;,.]/, 'delimiter'],
-        
-        // Operators
-        [/[=><!\-*/%+]+/, 'operator'],
-      ]
-    }
-  })
+note === VARIABLES ===
+note Variables HOLD data in memory
 
-  // Define the language configuration
-  monaco.languages.setLanguageConfiguration('genz', {
-    comments: {
-      lineComment: '//',
-    },
-    brackets: [
-      ['{', '}'],
-      ['[', ']'],
-      ['(', ')']
-    ],
-    autoClosingPairs: [
-      { open: '{', close: '}' },
-      { open: '[', close: ']' },
-      { open: '(', close: ')' },
-      { open: '"', close: '"' }
-    ]
-  })
-}
+hold name = "Alex"
+hold age = 17
+hold score = 95.5
 
-// Sample Gen-Z code
-const initialCode = `// Welcome to Gen-Z Slang Lang!
-// This is a simple example to get you started.
+note === OUTPUT ===
+note 'say' outputs text to the screen
 
-// Variable declaration
-tea name = "bruh";
-tea age = 20;
+say "Hello, " + name + "!"
+say "You are " + age + " years old"
 
-// Conditional statement
-sus (age > 18) {
-  yeet "You're an adult, " bop name;
+note === BOOLEANS ===
+note bet = true, cap = false
+
+hold isStudent = bet
+hold hasCar = cap
+
+note === CONDITIONALS ===
+note Make decisions with if/else
+
+if (age >= 18) {
+    say "You can vote!"
 } else {
-  yeet "You're not an adult yet, " bop name;
+    say "Not old enough to vote yet"
 }
 
-// Loop example 
-tea count = 0;
-vibe (count < 5) {
-  yeet "count: " bop count;
-  count = count bop 1;
+note === LOOPS ===
+note 'keep' repeats while condition is true
+
+hold count = 0
+keep (count < 3) {
+    say "Count: " + count
+    count = count + 1
 }
 
-// Boolean values
-tea is_cool = bet;
-tea is_mid = cap;
+note === FUNCTIONS ===
+note 'skill' creates reusable code blocks
 
-// Math operations
-tea a = 10;
-tea b = 2;
-tea sum = a bop b;     // Addition: 12
-tea diff = a skrt b;   // Subtraction: 8
-tea prod = a flex b;   // Multiplication: 20
-tea quot = a yikes b;  // Division: 5
-
-yeet "Math results:";
-yeet "10 + 2 = " bop sum;
-yeet "10 - 2 = " bop diff;
-yeet "10 * 2 = " bop prod;
-yeet "10 / 2 = " bop quot;
-
-// Function definition
-lowkey calculate_rizz(charisma, drip) {
-  tea base = charisma flex drip;     // Multiplication
-  tea bonus = base yikes 2;          // Division
-  yeet base bop bonus bop 5;         // Addition
+skill greet(person) {
+    say "Hey " + person + ", what's up!"
 }
 
-// Function call
-tea rizz_level = calculate_rizz(5, 3);
-yeet "Your rizz level is: " bop rizz_level;  // Output: Your rizz level is: 20 (15 + 7.5 + 5)
+greet("Jordan")
+greet("Sam")
+
+say "Done! You learned the basics!"
 `;
+
+// Mock execution steps for demonstration
+function generateMockSteps(code: string): ExecutionStep[] {
+  const lines = code.split('\n');
+  const steps: ExecutionStep[] = [];
+  const variables = new Map<string, Variable>();
+
+  lines.forEach((line, index) => {
+    const lineNum = index + 1;
+    const trimmed = line.trim();
+
+    // Skip empty lines and comments
+    if (!trimmed || trimmed.startsWith('note')) return;
+
+    // Variable declaration: hold name = value
+    const holdMatch = trimmed.match(/^hold\s+(\w+)\s*=\s*(.+)$/);
+    if (holdMatch) {
+      const [, name, valueStr] = holdMatch;
+      let value: string | number | boolean = valueStr;
+      let type: Variable['type'] = 'string';
+
+      if (valueStr.startsWith('"') && valueStr.endsWith('"')) {
+        value = valueStr.slice(1, -1);
+        type = 'string';
+      } else if (valueStr === 'bet') {
+        value = true;
+        type = 'boolean';
+      } else if (valueStr === 'cap') {
+        value = false;
+        type = 'boolean';
+      } else if (!isNaN(Number(valueStr))) {
+        value = Number(valueStr);
+        type = 'number';
+      }
+
+      const variable: Variable = { name, value, type, isNew: true };
+      variables.set(name, variable);
+
+      steps.push({
+        line: lineNum,
+        code: trimmed,
+        explanation: `Creating variable "${name}"`,
+        details: [
+          `Reserved a spot in memory called "${name}"`,
+          `Stored the ${type} value: ${type === 'string' ? `"${value}"` : value}`,
+          `Type: ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+        ],
+        memoryChanges: [{ ...variable }],
+      });
+      return;
+    }
+
+    // Assignment: name = value (update existing)
+    const assignMatch = trimmed.match(/^(\w+)\s*=\s*(.+)$/);
+    if (assignMatch && variables.has(assignMatch[1])) {
+      const [, name, valueStr] = assignMatch;
+      const existing = variables.get(name)!;
+      const previousValue = existing.value;
+
+      let newValue: string | number | boolean = valueStr;
+      // Simple expression evaluation for count + 1
+      if (valueStr.includes('+')) {
+        const parts = valueStr.split('+').map(p => p.trim());
+        if (parts[0] === name && !isNaN(Number(parts[1]))) {
+          newValue = (existing.value as number) + Number(parts[1]);
+        }
+      } else if (!isNaN(Number(valueStr))) {
+        newValue = Number(valueStr);
+      }
+
+      existing.value = newValue;
+      existing.isNew = false;
+      existing.isUpdated = true;
+      existing.previousValue = previousValue;
+
+      steps.push({
+        line: lineNum,
+        code: trimmed,
+        explanation: `Updating variable "${name}"`,
+        details: [
+          `Changed value from ${previousValue} to ${newValue}`,
+          `The variable still holds the same spot in memory`,
+        ],
+        memoryChanges: [{ ...existing }],
+      });
+      return;
+    }
+
+    // Say statement
+    const sayMatch = trimmed.match(/^say\s+(.+)$/);
+    if (sayMatch) {
+      let output = sayMatch[1];
+      // Simple string interpolation for demo
+      variables.forEach((v, name) => {
+        output = output.replace(new RegExp(`\\b${name}\\b`, 'g'), String(v.value));
+      });
+      // Clean up the output
+      output = output.replace(/"/g, '').replace(/\s*\+\s*/g, '');
+
+      steps.push({
+        line: lineNum,
+        code: trimmed,
+        explanation: `Outputting to screen`,
+        details: [
+          `The 'say' command prints text to the output`,
+          `Result: "${output}"`,
+        ],
+        memoryChanges: [],
+        output,
+      });
+      return;
+    }
+
+    // If statement
+    if (trimmed.startsWith('if')) {
+      steps.push({
+        line: lineNum,
+        code: trimmed,
+        explanation: `Checking a condition`,
+        details: [
+          `The 'if' statement evaluates whether something is true (bet) or false (cap)`,
+          `If the condition is bet, the code inside { } runs`,
+          `If it's cap, we skip to 'else' (if there is one)`,
+        ],
+        memoryChanges: [],
+      });
+      return;
+    }
+
+    // Else statement
+    if (trimmed.startsWith('} else {') || trimmed === 'else {') {
+      steps.push({
+        line: lineNum,
+        code: trimmed,
+        explanation: `Alternative path (else)`,
+        details: [
+          `The condition was cap (false)`,
+          `So we run the code in the else block instead`,
+        ],
+        memoryChanges: [],
+      });
+      return;
+    }
+
+    // Keep (while) loop
+    if (trimmed.startsWith('keep')) {
+      steps.push({
+        line: lineNum,
+        code: trimmed,
+        explanation: `Starting a loop`,
+        details: [
+          `'keep' repeats the code while the condition is bet (true)`,
+          `When the condition becomes cap (false), the loop stops`,
+          `This is how computers do repetitive tasks!`,
+        ],
+        memoryChanges: [],
+      });
+      return;
+    }
+
+    // Skill (function) declaration
+    if (trimmed.startsWith('skill')) {
+      const skillMatch = trimmed.match(/^skill\s+(\w+)\s*\(/);
+      if (skillMatch) {
+        const skillName = skillMatch[1];
+        steps.push({
+          line: lineNum,
+          code: trimmed,
+          explanation: `Defining a skill (function)`,
+          details: [
+            `Creating a reusable block of code called "${skillName}"`,
+            `Skills can be called multiple times with different inputs`,
+            `Think of it like teaching the computer a new trick!`,
+          ],
+          memoryChanges: [],
+        });
+      }
+      return;
+    }
+
+    // Function call
+    const callMatch = trimmed.match(/^(\w+)\s*\((.+)\)$/);
+    if (callMatch) {
+      const [, funcName, args] = callMatch;
+      steps.push({
+        line: lineNum,
+        code: trimmed,
+        explanation: `Calling skill "${funcName}"`,
+        details: [
+          `Running the "${funcName}" skill with input: ${args}`,
+          `The computer jumps to where the skill was defined`,
+          `Then it runs that code and comes back here`,
+        ],
+        memoryChanges: [],
+        output: `Hey ${args.replace(/"/g, '')}, what's up!`,
+      });
+      return;
+    }
+  });
+
+  return steps;
+}
 
 function App() {
   const [code, setCode] = useState(initialCode);
-  const [output, setOutput] = useState<string[]>([]);
-  const [isRunning, setIsRunning] = useState(false);
+  const [executionState, setExecutionState] = useState<ExecutionState>({
+    currentLine: 0,
+    variables: new Map(),
+    output: [],
+    steps: [],
+    currentStepIndex: -1,
+    isRunning: false,
+    isPaused: false,
+    speed: 'normal',
+  });
 
-  // Handle code execution
-  const handleRunCode = () => {
-    setIsRunning(true);
-    setOutput(['🔥 Running Gen-Z Slang Lang code...']);
-    
-    // Simulate execution delay
-    setTimeout(() => {
-      // Placeholder for actual execution - will be replaced with real interpreter
-      const simulatedOutput = [
-        'You\'re an adult, bruh',
-        'count: 0',
-        'count: 1', 
-        'count: 2',
-        'count: 3',
-        'count: 4',
-        'Math results:',
-        '10 + 2 = 12',
-        '10 - 2 = 8',
-        '10 * 2 = 20',
-        '10 / 2 = 5',
-        'Your rizz level is: 20'
-      ];
-      
-      setOutput(simulatedOutput);
-      setIsRunning(false);
-    }, 500);
-  };
+  const runIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const speedToMs = { slow: 1500, normal: 800, fast: 300 };
+
+  // Execute a single step
+  const executeStep = useCallback(() => {
+    setExecutionState((prev) => {
+      const nextIndex = prev.currentStepIndex + 1;
+
+      if (nextIndex >= prev.steps.length) {
+        // Execution complete
+        if (runIntervalRef.current) {
+          clearInterval(runIntervalRef.current);
+          runIntervalRef.current = null;
+        }
+        return { ...prev, isRunning: false, isPaused: false };
+      }
+
+      const step = prev.steps[nextIndex];
+      const newVariables = new Map(prev.variables);
+
+      // Clear previous isNew/isUpdated flags
+      newVariables.forEach((v) => {
+        v.isNew = false;
+        v.isUpdated = false;
+        v.previousValue = undefined;
+      });
+
+      // Apply memory changes
+      step.memoryChanges.forEach((change) => {
+        newVariables.set(change.name, { ...change });
+      });
+
+      // Add output if any
+      const newOutput = step.output ? [...prev.output, step.output] : prev.output;
+
+      return {
+        ...prev,
+        currentLine: step.line,
+        variables: newVariables,
+        output: newOutput,
+        currentStepIndex: nextIndex,
+      };
+    });
+  }, []);
+
+  // Run all code
+  const handleRun = useCallback(() => {
+    const steps = generateMockSteps(code);
+
+    setExecutionState({
+      currentLine: 0,
+      variables: new Map(),
+      output: [],
+      steps,
+      currentStepIndex: -1,
+      isRunning: true,
+      isPaused: false,
+      speed: executionState.speed,
+    });
+
+    // Start interval for continuous execution
+    runIntervalRef.current = setInterval(() => {
+      executeStep();
+    }, speedToMs[executionState.speed]);
+  }, [code, executionState.speed, executeStep]);
+
+  // Step through code
+  const handleStep = useCallback(() => {
+    if (executionState.currentStepIndex === -1) {
+      // First step - generate steps
+      const steps = generateMockSteps(code);
+      setExecutionState((prev) => ({
+        ...prev,
+        steps,
+        isRunning: true,
+        isPaused: true,
+      }));
+      setTimeout(executeStep, 100);
+    } else {
+      executeStep();
+    }
+  }, [code, executionState.currentStepIndex, executeStep]);
+
+  // Pause/Resume
+  const handlePause = useCallback(() => {
+    if (executionState.isPaused) {
+      // Resume
+      runIntervalRef.current = setInterval(() => {
+        executeStep();
+      }, speedToMs[executionState.speed]);
+      setExecutionState((prev) => ({ ...prev, isPaused: false }));
+    } else {
+      // Pause
+      if (runIntervalRef.current) {
+        clearInterval(runIntervalRef.current);
+        runIntervalRef.current = null;
+      }
+      setExecutionState((prev) => ({ ...prev, isPaused: true }));
+    }
+  }, [executionState.isPaused, executionState.speed, executeStep]);
+
+  // Reset
+  const handleReset = useCallback(() => {
+    if (runIntervalRef.current) {
+      clearInterval(runIntervalRef.current);
+      runIntervalRef.current = null;
+    }
+    setExecutionState({
+      currentLine: 0,
+      variables: new Map(),
+      output: [],
+      steps: [],
+      currentStepIndex: -1,
+      isRunning: false,
+      isPaused: false,
+      speed: executionState.speed,
+    });
+  }, [executionState.speed]);
+
+  // Speed change
+  const handleSpeedChange = useCallback((speed: 'slow' | 'normal' | 'fast') => {
+    setExecutionState((prev) => ({ ...prev, speed }));
+
+    // Update running interval if currently running
+    if (runIntervalRef.current && executionState.isRunning && !executionState.isPaused) {
+      clearInterval(runIntervalRef.current);
+      runIntervalRef.current = setInterval(() => {
+        executeStep();
+      }, speedToMs[speed]);
+    }
+  }, [executionState.isRunning, executionState.isPaused, executeStep]);
+
+  const currentStep = executionState.currentStepIndex >= 0
+    ? executionState.steps[executionState.currentStepIndex]
+    : null;
 
   return (
-    <div className="app-container">
-      <header className="app-header">
-        <div className="logo-container">
-          <h1>🤙 Gen-Z Slang Lang</h1>
-        </div>
-        <div className="actions">
-          <button 
-            className={`run-button ${isRunning ? 'running' : ''}`}
-            onClick={handleRunCode}
-            disabled={isRunning}
-          >
-            {isRunning ? 'Running...' : 'Run Code'}
-          </button>
-        </div>
-      </header>
+    <div className="app">
+      <ControlBar
+        isRunning={executionState.isRunning}
+        isPaused={executionState.isPaused}
+        speed={executionState.speed}
+        onRun={handleRun}
+        onStep={handleStep}
+        onPause={handlePause}
+        onReset={handleReset}
+        onSpeedChange={handleSpeedChange}
+      />
 
-      <main className="editor-container">
-        <section className="code-section">
-          <Editor
-            height="100%"
-            defaultLanguage="genz"
-            defaultValue={code}
-            onChange={(value) => setCode(value || '')}
-            options={{
-              fontSize: 14,
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-              automaticLayout: true,
-              tabSize: 2,
-            }}
-            beforeMount={setupGenzLanguage}
+      <main className="main-content">
+        <div className="top-panels">
+          <CodePanel
+            code={code}
+            currentLine={executionState.currentLine}
+            onChange={setCode}
+            isRunning={executionState.isRunning}
           />
-        </section>
-        
-        <section className="output-section">
-          <h3>Output</h3>
-          <div className="output-console">
-            {output.map((line, index) => (
-              <div key={index} className="output-line">{line}</div>
-            ))}
-          </div>
-        </section>
+          <MemoryPanel variables={executionState.variables} />
+          <OutputPanel output={executionState.output} />
+        </div>
+
+        <ExplanationPanel
+          currentStep={currentStep}
+          isRunning={executionState.isRunning && !executionState.isPaused}
+        />
       </main>
-      
-      <footer className="app-footer">
-        <p>
-          Gen-Z Slang Lang - A toy programming language with Gen-Z slang keywords.
-          <a href="https://github.com/your-username/genz-lang" target="_blank" rel="noopener noreferrer">GitHub</a>
-        </p>
-      </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
