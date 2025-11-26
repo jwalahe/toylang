@@ -155,7 +155,7 @@ export function CodePanel({ code, currentLine, onChange, isRunning }: CodePanelP
           height="100%"
           defaultLanguage="vibescript"
           value={code}
-          onChange={(value) => onChange(value || '')}
+          onChange={(value: string | undefined) => onChange(value || '')}
           onMount={handleEditorMount}
           options={{
             fontSize: 14,
