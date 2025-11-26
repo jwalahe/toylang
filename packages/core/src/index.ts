@@ -1,97 +1,119 @@
-// src/index.ts
-import nearley from 'nearley';
-import { Program } from './ast.js';
-import lexer from './lexer.js';
-import { Interpreter, GenzRuntimeError } from './interpreter.js';
-import grammar from './grammar-esm-fixed.js';
+/**
+ * VibeScript - A programming language for learning
+ *
+ * Main entry point for the VibeScript core library.
+ * Provides a simple API for parsing and executing VibeScript code.
+ */
 
-export class GenzSyntaxError extends Error {
-  line?: number;
-  col?: number;
+import { Lexer } from './lexer/index.js';
+import { Parser } from './parser/index.js';
+import { Interpreter, type InputProvider, type OutputHandler, ConsoleIO } from './interpreter/index.js';
+import type { Program } from './ast/index.js';
+import { VibeScriptError, LexerError, ParseError, RuntimeError } from './errors/index.js';
 
-  constructor(message: string, line?: number, col?: number) {
-    super(`🔥 Syntax sus detected: ${message}`);
-    this.name = 'GenzSyntaxError';
-    this.line = line;
-    this.col = col;
-  }
-}
-
-export class GenzLang {
+/**
+ * VibeScript - Main class for executing VibeScript code
+ *
+ * Usage:
+ *   const vs = new VibeScript();
+ *   const output = vs.execute('say "Hello World"');
+ */
+export class VibeScript {
   private interpreter: Interpreter;
-  private parser?: nearley.Parser;
-  
-  constructor() {
-    this.interpreter = new Interpreter();
+
+  constructor(
+    inputProvider?: InputProvider,
+    outputHandler?: OutputHandler
+  ) {
+    this.interpreter = new Interpreter(inputProvider, outputHandler);
   }
-  
+
+  /**
+   * Tokenize source code
+   */
+  tokenize(source: string) {
+    const lexer = new Lexer(source);
+    return lexer.scanTokens();
+  }
+
   /**
    * Parse source code into an AST
    */
   parse(source: string): Program {
-    try {
-      // Create a new parser instance from our grammar
-      const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
-      
-      // Feed the input string to the parser
-      parser.feed(source);
-      
-      // Check for successful parse results
-      if (parser.results.length === 0) {
-        throw new GenzSyntaxError('No parse results, syntax error');
-      }
-      
-      if (parser.results.length > 1) {
-        console.warn(`Ambiguous grammar detected! ${parser.results.length} parse trees found.`);
-      }
-      
-      // Return the first parse result as our AST
-      return parser.results[0] as Program;
-    } catch (error) {
-      if (error instanceof Error) {
-        // Try to extract line/col info from nearley errors
-        const lineMatch = error.message.match(/at line (\d+)/);
-        const colMatch = error.message.match(/at column (\d+)/);
-        
-        const line = lineMatch ? parseInt(lineMatch[1], 10) : undefined;
-        const col = colMatch ? parseInt(colMatch[1], 10) : undefined;
-        
-        throw new GenzSyntaxError(error.message, line, col);
-      }
-      throw error;
-    }
+    const tokens = this.tokenize(source);
+    const parser = new Parser(tokens);
+    return parser.parse();
   }
-  
+
   /**
-   * Execute the source code and return the output
+   * Execute source code and return output
    */
   execute(source: string): string[] {
     try {
-      const ast = this.parse(source);
-      return this.interpreter.interpret(ast);
+      const program = this.parse(source);
+      return this.interpreter.interpret(program);
     } catch (error) {
-      // If the error is a simple string (likely a return value), just return it
-      if (typeof error === 'string') {
-        return [error];
+      if (error instanceof VibeScriptError) {
+        return [`Error: ${error.format()}`];
       }
-      
-      // If the error is one of our defined error types, return the message
-      if (error instanceof GenzSyntaxError || error instanceof GenzRuntimeError) {
-        return [error.message];
-      } 
-      
-      // For any other errors, create a diagnostic message
       if (error instanceof Error) {
-        console.error('Internal Error:', error);
+        return [`Error: ${error.message}`];
       }
-      
-      return [`${String(error)}`];
+      return [`Error: ${String(error)}`];
     }
+  }
+
+  /**
+   * Get the interpreter (for advanced usage)
+   */
+  getInterpreter(): Interpreter {
+    return this.interpreter;
   }
 }
 
-// Re-export types and error classes
-export { GenzRuntimeError };
-export type { Program } from './ast.js';
-export * from './ast.js';
-export { default as lexer, Token, TokenType } from './lexer.js';
+// Backwards compatibility alias
+export { VibeScript as GenzLang };
+
+// Re-export all public types and classes
+export { Lexer } from './lexer/index.js';
+export { Parser } from './parser/index.js';
+export { Interpreter, ConsoleIO } from './interpreter/index.js';
+export type { InputProvider, OutputHandler } from './interpreter/index.js';
+
+// Token types
+export { Token } from './tokens/index.js';
+export { TokenType, KEYWORDS } from './tokens/index.js';
+
+// AST types
+export * from './ast/index.js';
+
+// Runtime types
+export {
+  Environment,
+  type VibeValue,
+  type VibeCallable,
+  VibeFunction,
+  VibeNativeFunction,
+  VibeArray,
+  stringify,
+  getTypeName,
+  isTruthy,
+  isEqual,
+  isCallable,
+  isArray,
+} from './runtime/index.js';
+
+// Error types
+export {
+  VibeScriptError,
+  LexerError,
+  ParseError,
+  RuntimeError,
+  BreakSignal,
+  ContinueSignal,
+  ReturnSignal,
+} from './errors/index.js';
+
+// Backwards compatibility
+export { RuntimeError as GenzRuntimeError };
+export { ParseError as GenzSyntaxError };
