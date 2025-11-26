@@ -42,7 +42,7 @@ export function ControlBar({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="btn-icon">&#9654;</span>
+          <span className="btn-icon">▶</span>
           <span className="btn-label">Run</span>
         </motion.button>
 
@@ -53,7 +53,7 @@ export function ControlBar({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="btn-icon">&#9197;</span>
+          <span className="btn-icon">⏭</span>
           <span className="btn-label">Step</span>
         </motion.button>
 
@@ -64,7 +64,7 @@ export function ControlBar({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="btn-icon">{isPaused ? '&#9654;' : '&#9208;'}</span>
+          <span className="btn-icon">{isPaused ? '▶' : '⏸'}</span>
           <span className="btn-label">{isPaused ? 'Resume' : 'Pause'}</span>
         </motion.button>
 
@@ -74,7 +74,7 @@ export function ControlBar({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="btn-icon">&#8635;</span>
+          <span className="btn-icon">↻</span>
           <span className="btn-label">Reset</span>
         </motion.button>
 
